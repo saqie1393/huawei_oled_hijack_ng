@@ -1,0 +1,34 @@
+name: Build Hijack Libraries
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Android NDK
+      run: |
+        wget https://dl.google.com/android/repository/android-ndk-r23c-linux.zip
+        unzip -q android-ndk-r23c-linux.zip
+        echo "${GITHUB_WORKSPACE}/android-ndk-r23c/toolchains/llvm/prebuilt/linux-x86_64/bin" >> $GITHUB_PATH
+    
+    - name: Build all targets
+      run: |
+        make CC=armv7a-linux-androideabi19-clang all
+    
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: hijack-binaries
+        path: |
+          *.so
+          *_client
+        if-no-files-found: error
