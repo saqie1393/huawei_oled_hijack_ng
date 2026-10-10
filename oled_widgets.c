@@ -24,6 +24,7 @@ extern void put_pixel(uint8_t x, uint8_t y, uint8_t red, uint8_t green, uint8_t 
 extern void put_line(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t red, uint8_t green, uint8_t blue);
 extern void put_rect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t red, uint8_t green, uint8_t blue);
 extern void put_small_text(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t red, uint8_t green, uint8_t blue, char *text);
+extern void put_small_text_4bpp(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t red, uint8_t green, uint8_t blue, uint8_t *text);
 extern void put_large_text(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t red, uint8_t green, uint8_t blue, char *text);
 extern void put_raw_buffer(uint8_t* from, uint32_t len);
 extern int get_bytes_num_fit_by_width(uint8_t x, uint8_t w, uint8_t *text, uint8_t* font_widths);
@@ -183,10 +184,10 @@ void main_paint() {
         }
 
         if (page_first_item + i == main_current_item) {
-            put_small_text(4, y, lcd_width, lcd_height, 255,0,255, "#");
+            put_small_text_4bpp(4, y, lcd_width, lcd_height, 255,0,255, "#");
         }
 
-        put_small_text(20, y, lcd_width, lcd_height, 255,255,255, cur_line);
+        put_small_text_4bpp(20, y, lcd_width, lcd_height, 255,255,255, cur_line);
     }
 
     if (page_first_item + lines_per_page < main_lines_num) {
@@ -196,7 +197,6 @@ void main_paint() {
             put_small_text(20, 112, lcd_width, lcd_height, 255, 255, 255, SMALL_FONT_TRIANGLE);
         }
     }
-
 }
 
 void main_power_key_pressed() {
@@ -436,37 +436,37 @@ void mobile_signal_text_paint() {
 
     const int H = 21;
 
-    put_small_text(8, (H*0)+6-dy, lcd_width, lcd_height, 255, 255, 255, "RSSI");
+    put_small_text_4bpp(8, (H*0)+6-dy, lcd_width, lcd_height, 255, 255, 255, "RSSI");
     mobile_print_val_colorized(48, (H*0)+2-dy, -65, -75, -85, mobile_rssi, "dBm");
 
     if (mobile_rsrp != 0) {
-        put_small_text(8, (H*1)+6-dy, lcd_width, lcd_height, 255, 255, 255, "RSRP");
+        put_small_text_4bpp(8, (H*1)+6-dy, lcd_width, lcd_height, 255, 255, 255, "RSRP");
         mobile_print_val_colorized(48, (H*1)+2-dy, -84, -102, -111, mobile_rsrp, "dBm");
     } else if (mobile_rscp != 0) {
-        put_small_text(8, (H*1)+6-dy, lcd_width, lcd_height, 255, 255, 255, "RSCP");
+        put_small_text_4bpp(8, (H*1)+6-dy, lcd_width, lcd_height, 255, 255, 255, "RSCP");
         mobile_print_val_colorized(48, (H*1)+2-dy, -65, -75, -85, mobile_rscp, "dBm");
     }
 
     if (mobile_rsrq != 0) {
-        put_small_text(8, (H*2)+6-dy, lcd_width, lcd_height, 255, 255, 255, "RSRQ");
+        put_small_text_4bpp(8, (H*2)+6-dy, lcd_width, lcd_height, 255, 255, 255, "RSRQ");
         mobile_print_val_colorized(48, (H*2)+2-dy, -5, -9, -12, mobile_rsrq, "dB");
     } else if (mobile_ecio != 0) {
-        put_small_text(8, (H*2)+6-dy, lcd_width, lcd_height, 255, 255, 255, "EC/IO");
+        put_small_text_4bpp(8, (H*2)+6-dy, lcd_width, lcd_height, 255, 255, 255, "EC/IO");
         mobile_print_val_colorized(48, (H*2)+2-dy, -6, -9, -12, mobile_ecio, "dB");
     }
 
     if (is_small_screen && !mobile_sinr && !mobile_ul_bw && !mobile_dl_bw && !mobile_ul_bw) {
-        put_small_text(8, (H*3)+6-dy, lcd_width, lcd_height, 255, 255, 255, "No 4G Info");
+        put_small_text_4bpp(8, (H*3)+6-dy, lcd_width, lcd_height, 255, 255, 255, "No 4G Info");
         return;
     }
 
     if (mobile_sinr != 0) {
-        put_small_text(8, (H*3)+6-dy, lcd_width, lcd_height, 255, 255, 255, "SINR");
+        put_small_text_4bpp(8, (H*3)+6-dy, lcd_width, lcd_height, 255, 255, 255, "SINR");
         mobile_print_val_colorized(48, (H*3)+2-dy, 12, 10, 7, mobile_sinr, "dB");
     }
 
     if (mobile_ul_bw != 0 && mobile_dl_bw != 0) {
-        put_small_text(8, (H*4)+6-dy, lcd_width, lcd_height, 255, 255, 255, "BW");
+        put_small_text_4bpp(8, (H*4)+6-dy, lcd_width, lcd_height, 255, 255, 255, "BW");
         mobile_print_val_colorized(48, (H*4)+2-dy, 12, 10, 7, (mobile_ul_bw+mobile_dl_bw) / 2, "Mhz");
     }
 
@@ -478,7 +478,7 @@ void mobile_signal_text_paint() {
             snprintf(buf, 256, "B%d+CA%d", mobile_band, mobile_ca);
         }
 
-        put_small_text(8, (H*5)+6-dy, lcd_width, lcd_height, 255, 255, 255, "Band");
+        put_small_text_4bpp(8, (H*5)+6-dy, lcd_width, lcd_height, 255, 255, 255, "Band");
         put_large_text(48, (H*5)+2-dy, lcd_width, lcd_height, 255, 255, 255, buf);
     }
 }
