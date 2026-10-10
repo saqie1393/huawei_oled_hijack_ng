@@ -20,9 +20,43 @@ jobs:
         unzip -q android-ndk-r23c-linux.zip
         echo "${GITHUB_WORKSPACE}/android-ndk-r23c/toolchains/llvm/prebuilt/linux-x86_64/bin" >> $GITHUB_PATH
     
+    # ============================================================
+    # NAYA STEP 1: Python setup (ensure Python 3 available)
+    # ============================================================
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    # ============================================================
+    # NAYA STEP 2: 4-bit font generate karein
+    # ============================================================
+    - name: Generate 4-bit font
+      run: |
+        echo "=== Running convert_font.py ==="
+        python3 convert_font.py
+        echo ""
+        echo "=== Generated file (first 30 lines) ==="
+        head -30 oled_font_4bpp.h
+        echo ""
+        echo "=== File size ==="
+        ls -lh oled_font_4bpp.h
+        wc -l oled_font_4bpp.h
+    
     - name: Build all targets
       run: |
         make CC=armv7a-linux-androideabi19-clang all
+    
+    # ============================================================
+    # NAYA STEP 3: Verify binaries (optional, lekin useful)
+    # ============================================================
+    - name: Verify binaries
+      run: |
+        echo "=== Built files ==="
+        ls -lh *.so *_client 2>/dev/null || true
+        echo ""
+        echo "=== File types ==="
+        file *.so *_client 2>/dev/null || true
     
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
