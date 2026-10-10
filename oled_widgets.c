@@ -696,7 +696,7 @@ void paint_menu(uint8_t curr_item, char items[][MAXITEMLEN]) {
         int is_item = (strcmp(item_type, "item") == 0);
 
         if (page_first_item + i == curr_item && is_item) {
-            put_small_text(5, y, lcd_width, lcd_height, 255,0,255, "#");
+            put_small_text_4bpp(5, y, lcd_width, lcd_height, 255,0,255, "#");   // ← badla
         }
 
         int8_t x;
@@ -713,14 +713,14 @@ void paint_menu(uint8_t curr_item, char items[][MAXITEMLEN]) {
             continue;
         }
 
-        put_small_text(x, y, lcd_width, lcd_height, 255,255,255, item_text);
+        put_small_text_4bpp(x, y, lcd_width, lcd_height, 255,255,255, item_text);   // ← badla
     }
 
     if (i == lines_per_page && (i+page_first_item) < MAXMENUITEMS && items[page_first_item + i][0]) {
         if (is_small_screen) {
-            put_small_text(118, 54, lcd_width, lcd_height, 255, 255, 255, SMALL_FONT_TRIANGLE);
+            put_small_text(118, 54, lcd_width, lcd_height, 255, 255, 255, SMALL_FONT_TRIANGLE);   // ← waise hi
         } else {
-            put_small_text(20, 112, lcd_width, lcd_height, 255, 255, 255, SMALL_FONT_TRIANGLE);
+            put_small_text(20, 112, lcd_width, lcd_height, 255, 255, 255, SMALL_FONT_TRIANGLE);   // ← waise hi
         }
     }
 }
