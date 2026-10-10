@@ -4,6 +4,7 @@
 
 #include "oled.h"
 #include "oled_font.h"
+#include "oled_font_4bpp.h"   // ← NAYA: 4-bit font (auto-generated)
 
 uint8_t is_small_screen = 0;
 uint8_t lcd_width = LCD_MAX_WIDTH;
@@ -156,6 +157,68 @@ void put_text(uint8_t x, uint8_t y, uint8_t w, uint8_t h,
     }
 }
 
+// ============================================================
+// NAYA: 4-bit anti-aliased text rendering
+// ============================================================
+void put_text_4bpp(uint8_t x, uint8_t y, uint8_t w, uint8_t h,
+                   uint8_t red, uint8_t green, uint8_t blue, uint8_t *text,
+                   uint8_t *font, uint8_t font_bytes_per_char,
+                   uint8_t font_y_size, uint8_t* font_widths) {
+
+    if (!text) {
+        return;
+    }
+
+    int max_x = x + w;
+    int max_y = y + h;
+
+    int char_x = x;
+    int char_y = y;
+
+    while(*text) {
+        uint8_t char_idx = get_char_idx_and_go_next(&text);
+        uint8_t char_width = font_widths[char_idx];
+
+        if(char_idx == '\n') {
+            char_x = x;
+            char_y += font_y_size;
+            continue;
+        }
+
+        for(int letter_y = 0; letter_y < font_y_size; letter_y += 1) {
+            for (int letter_x = 0; letter_x < char_width; letter_x += 1) {
+                int cur_x = char_x + letter_x;
+                int cur_y = char_y + letter_y;
+
+                if(cur_x >= max_x || cur_y >= max_y) {
+                    continue;
+                }
+
+                // 4-bit: 2 pixels per byte
+                int byte_idx = letter_y * font_bytes_per_char + (letter_x / 2);
+                uint8_t byte_val = font[char_idx * font_bytes_per_char * font_y_size + byte_idx];
+                uint8_t pixel_val;
+
+                if (letter_x % 2 == 0) {
+                    pixel_val = byte_val >> 4;        // upper nibble
+                } else {
+                    pixel_val = byte_val & 0x0F;      // lower nibble
+                }
+
+                // pixel_val: 0-15 (0 = transparent, 15 = full color)
+                if (pixel_val > 0) {
+                    uint8_t r = (uint8_t)(((uint16_t)red   * pixel_val) / 15);
+                    uint8_t g = (uint8_t)(((uint16_t)green * pixel_val) / 15);
+                    uint8_t b = (uint8_t)(((uint16_t)blue  * pixel_val) / 15);
+                    put_pixel(cur_x, cur_y, r, g, b);
+                }
+            }
+        }
+
+        char_x += char_width;
+    }
+}
+
 uint32_t get_bytes_num_fit_by_width(uint8_t x, uint8_t w, uint8_t *text, uint8_t* font_widths) {
     uint8_t *start_text = text;
     uint8_t *last_good_text = start_text;
@@ -174,6 +237,19 @@ void put_small_text(uint8_t x, uint8_t y, uint8_t w, uint8_t h,
                     uint8_t red, uint8_t green, uint8_t blue, uint8_t *text) {
 
     put_text(x, y, w, h, red, green, blue, text, (uint8_t*) SMALL_FONT, SMALL_FONT_BYTES_PER_CHAR, SMALL_FONT_SIZE, SMALL_FONT_WIDTHS);
+}
+
+// ============================================================
+// NAYA: 4-bit anti-aliased small text wrapper
+// ============================================================
+void put_small_text_4bpp(uint8_t x, uint8_t y, uint8_t w, uint8_t h,
+                          uint8_t red, uint8_t green, uint8_t blue, uint8_t *text) {
+
+    put_text_4bpp(x, y, w, h, red, green, blue, text,
+                  (uint8_t*) SMALL_FONT_4BPP,
+                  SMALL_FONT_4BPP_BYTES_PER_CHAR,
+                  SMALL_FONT_SIZE,
+                  SMALL_FONT_WIDTHS);
 }
 
 void put_large_text(uint8_t x, uint8_t y, uint8_t w, uint8_t h,
