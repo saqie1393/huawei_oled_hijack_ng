@@ -15,7 +15,20 @@
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
-
+// Icon drawing functions
+extern void draw_icon_signal(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b);
+extern void draw_icon_wifi(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b);
+extern void draw_icon_battery(uint8_t x, uint8_t y, int percent, uint8_t r, uint8_t g, uint8_t b);
+extern void draw_icon_sms(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b);
+extern void draw_icon_speedtest(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b);
+extern void draw_icon_radio(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b);
+extern void draw_icon_wrench(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b);
+extern void draw_icon_key(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b);
+extern void draw_icon_adb(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b);
+extern void draw_icon_matrix(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b);
+extern void draw_icon_video(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b);
+extern void draw_icon_snake(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b);
+extern void draw_icon_script(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b);
 extern void lcd_refresh_screen(struct lcd_screen*);
 extern int lcd_control_operate(int);
 extern int notify_handler_async(int subsystemid, int action, int subaction);
@@ -169,10 +182,28 @@ char main_lines_num = 14;
 void main_init() {
     main_current_item = 0;
 }
+typedef void (*icon_draw_func)(uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
 
+icon_draw_func get_icon_for_item(int idx) {
+    switch(idx) {
+        case 1: return draw_icon_signal;
+        case 2: return draw_icon_radio;
+        case 3: return draw_icon_sms;
+        case 4: return draw_icon_wifi;
+        case 5: return draw_icon_speedtest;
+        case 6: return draw_icon_wrench;
+        //case 7: return draw_icon_battery;
+        case 8: return draw_icon_key;
+        case 9: return draw_icon_adb;
+        case 10: return draw_icon_matrix;
+        case 11: return draw_icon_video;
+        case 12: return draw_icon_snake;
+        case 13: return draw_icon_script;
+        default: return 0;
+    }
+}
 void main_paint() {
     const int lines_per_page = is_small_screen ? 4 : 7;
-
     const int page_first_item = main_current_item / lines_per_page * lines_per_page;
 
     for (int i = 0; i < lines_per_page && page_first_item + i < main_lines_num; i += 1) {
@@ -183,11 +214,28 @@ void main_paint() {
             y += 3;
         }
 
-        if (page_first_item + i == main_current_item) {
-            put_small_text_4bpp(4, y, lcd_width, lcd_height, 255,0,255, "#");
+        int item_idx = page_first_item + i;
+
+        // Selection indicator
+        if (item_idx == main_current_item) {
+            put_small_text_4bpp(2, y, lcd_width, lcd_height, 255, 0, 255, "#");
         }
 
-        put_small_text_4bpp(20, y, lcd_width, lcd_height, 255,255,255, cur_line);
+        // Icon (skip for "Back" item)
+        if (item_idx > 0) {
+            icon_draw_func icon = get_icon_for_item(item_idx);
+            if (icon) {
+                // Color: cyan for selected, gray for unselected
+                if (item_idx == main_current_item) {
+                    icon(14, y - 1, 0, 255, 255);   // Cyan
+                } else {
+                    icon(14, y - 1, 150, 150, 150); // Gray
+                }
+            }
+        }
+
+        // Text (shift right to make room for icon)
+        put_small_text_4bpp(34, y, lcd_width, lcd_height, 255, 255, 255, cur_line);
     }
 
     if (page_first_item + lines_per_page < main_lines_num) {
