@@ -268,3 +268,159 @@ void put_raw_buffer(uint8_t* from, uint32_t len) {
 
     memcpy(secret_screen_buf, from, len);
 }
+// ============================================================
+// Simple icon drawing functions (16x16 area)
+// ============================================================
+
+// Signal bars (4 bars, increasing height)
+void draw_icon_signal(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b) {
+    // 4 bars: 3, 6, 9, 12 pixels tall
+    for (int i = 0; i < 4; i++) {
+        uint8_t h = 3 + i * 3;
+        put_rect(x + i * 4, y + 13 - h, 3, h, r, g, b);
+    }
+}
+
+// Wi-Fi (3 arcs + dot)
+void draw_icon_wifi(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b) {
+    // Dot at bottom
+    put_rect(x + 7, y + 13, 2, 2, r, g, b);
+    // Arc 1 (smallest)
+    put_rect(x + 5, y + 10, 6, 2, r, g, b);
+    // Arc 2 (medium)
+    put_rect(x + 3, y + 7, 10, 2, r, g, b);
+    // Arc 3 (largest)
+    put_rect(x + 1, y + 4, 14, 2, r, g, b);
+}
+
+// Battery (rectangle with fill level)
+void draw_icon_battery(uint8_t x, uint8_t y, int percent, 
+                       uint8_t r, uint8_t g, uint8_t b) {
+    // Battery body (outline)
+    put_rect(x, y + 3, 14, 10, r, g, b);
+    // Clear inside
+    put_rect(x + 1, y + 4, 12, 8, 0, 0, 0);
+    // Fill based on percent
+    int fill = (percent * 12) / 100;
+    uint8_t fr = (percent > 50) ? 0 : (percent > 20) ? 255 : 255;
+    uint8_t fg = (percent > 50) ? 255 : (percent > 20) ? 188 : 0;
+    put_rect(x + 1, y + 4, fill, 8, fr, fg, 0);
+    // Terminal (bump on right)
+    put_rect(x + 14, y + 6, 2, 4, r, g, b);
+}
+
+// SMS (envelope)
+void draw_icon_sms(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b) {
+    // Envelope outline
+    put_rect(x, y + 4, 16, 10, r, g, b);
+    // Clear inside
+    put_rect(x + 1, y + 5, 14, 8, 0, 0, 0);
+    // Diagonal lines (flap)
+    put_line(x + 1, y + 5, x + 8, y + 10, r, g, b);
+    put_line(x + 15, y + 5, x + 8, y + 10, r, g, b);
+}
+
+// Speedtest (lightning bolt)
+void draw_icon_speedtest(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b) {
+    // Lightning shape (rough)
+    put_rect(x + 7, y + 1, 3, 5, r, g, b);
+    put_rect(x + 4, y + 6, 6, 3, r, g, b);
+    put_rect(x + 6, y + 9, 3, 6, r, g, b);
+}
+
+// Radio mode (tower with waves)
+void draw_icon_radio(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b) {
+    // Tower base
+    put_rect(x + 6, y + 8, 4, 8, r, g, b);
+    // Tower top
+    put_rect(x + 5, y + 4, 6, 2, r, g, b);
+    // Waves (left)
+    put_line(x + 3, y + 2, x + 1, y + 6, r, g, b);
+    // Waves (right)
+    put_line(x + 12, y + 2, x + 14, y + 6, r, g, b);
+}
+
+// TTL/IMEI (wrench)
+void draw_icon_wrench(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b) {
+    // Handle
+    put_rect(x + 7, y + 6, 3, 9, r, g, b);
+    // Head (circle-ish)
+    put_rect(x + 3, y + 1, 10, 6, r, g, b);
+    // Clear center
+    put_rect(x + 5, y + 3, 6, 2, 0, 0, 0);
+}
+
+// SSH key (key shape)
+void draw_icon_key(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b) {
+    // Key head (circle)
+    put_rect(x + 1, y + 2, 8, 8, r, g, b);
+    // Clear center
+    put_rect(x + 3, y + 4, 4, 4, 0, 0, 0);
+    // Key shaft
+    put_rect(x + 9, y + 5, 6, 2, r, g, b);
+    // Teeth
+    put_rect(x + 13, y + 7, 2, 2, r, g, b);
+    put_rect(x + 11, y + 7, 2, 2, r, g, b);
+}
+
+// ADB (android-ish)
+void draw_icon_adb(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b) {
+    // Head
+    put_rect(x + 4, y + 3, 8, 5, r, g, b);
+    // Eyes
+    put_rect(x + 5, y + 5, 2, 2, 0, 0, 0);
+    put_rect(x + 9, y + 5, 2, 2, 0, 0, 0);
+    // Antennas
+    put_line(x + 5, y + 3, x + 3, y + 1, r, g, b);
+    put_line(x + 11, y + 3, x + 13, y + 1, r, g, b);
+    // Body
+    put_rect(x + 4, y + 9, 8, 4, r, g, b);
+}
+
+// Matrix (falling lines)
+void draw_icon_matrix(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b) {
+    // Several vertical lines of different heights
+    put_rect(x + 2, y + 2, 1, 12, r, g, b);
+    put_rect(x + 5, y + 4, 1, 10, r, g, b);
+    put_rect(x + 8, y + 1, 1, 13, r, g, b);
+    put_rect(x + 11, y + 5, 1, 9, r, g, b);
+    put_rect(x + 14, y + 3, 1, 11, r, g, b);
+}
+
+// Video (play button)
+void draw_icon_video(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b) {
+    // Rectangle
+    put_rect(x + 1, y + 3, 11, 10, r, g, b);
+    // Clear inside
+    put_rect(x + 2, y + 4, 9, 8, 0, 0, 0);
+    // Play triangle
+    put_rect(x + 4, y + 5, 2, 6, r, g, b);
+    put_rect(x + 6, y + 6, 2, 4, r, g, b);
+    put_rect(x + 8, y + 7, 2, 2, r, g, b);
+    // Camera bump
+    put_rect(x + 12, y + 5, 3, 6, r, g, b);
+}
+
+// Snake (curved line)
+void draw_icon_snake(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b) {
+    // Body (zigzag)
+    put_rect(x + 1, y + 3, 4, 2, r, g, b);
+    put_rect(x + 4, y + 5, 4, 2, r, g, b);
+    put_rect(x + 7, y + 7, 4, 2, r, g, b);
+    put_rect(x + 10, y + 9, 4, 2, r, g, b);
+    // Head
+    put_rect(x + 13, y + 10, 2, 3, r, g, b);
+}
+
+// Script (terminal)
+void draw_icon_script(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b) {
+    // Terminal box
+    put_rect(x, y + 2, 16, 12, r, g, b);
+    // Clear inside
+    put_rect(x + 1, y + 3, 14, 10, 0, 0, 0);
+    // Prompt lines
+    put_rect(x + 3, y + 5, 3, 1, r, g, b);  // ">"
+    put_rect(x + 6, y + 5, 5, 1, r, g, b);  // command
+    put_rect(x + 3, y + 8, 8, 1, r, g, b);  // output
+    put_rect(x + 3, y + 10, 6, 1, r, g, b); // output
+}
