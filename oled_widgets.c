@@ -1144,10 +1144,10 @@ void speedtest_paint_graph(float percentages[], float bandwidths[], uint32_t max
 void speedtest_paint() {
     if (speedtest_download_bandwidths[0] < 0) {
         char *msg = "Press MENU to start\n\nWarning:\n  The test eats traffic\nDo not use in roaming";
-        put_small_text(7, 40, lcd_width, lcd_height, 255, 255, 255, msg);
+        put_small_text_4bpp(7, 40, lcd_width, lcd_height, 255, 255, 255, msg);   // ← badla
 
         if (process_is_alive()) {
-            put_small_text(6, 20, lcd_width, lcd_height, 255, 255, 255, "Waiting for data...");
+            put_small_text_4bpp(6, 20, lcd_width, lcd_height, 255, 255, 255, "Waiting for data...");
         }
         return;
     }
@@ -1177,12 +1177,12 @@ void speedtest_paint() {
     if (is_small_screen) {
         for (int i = 0; i < 3; i += 1) {
             snprintf(tickbuf, 32, "%3d", i * max_mbps/2);
-            put_small_text(0, 24-12*i, lcd_width, lcd_height, 255, 255, 255, tickbuf);
+            put_small_text_4bpp(0, 24-12*i, lcd_width, lcd_height, 255, 255, 255, tickbuf);   // ← badla
         }
     } else {
         for (int i = 0; i < 5; i += 1) {
             snprintf(tickbuf, 32, "%3d", i * max_mbps/4);
-            put_small_text(0, 88-22*i, lcd_width, lcd_height, 255, 255, 255, tickbuf);
+            put_small_text_4bpp(0, 88-22*i, lcd_width, lcd_height, 255, 255, 255, tickbuf);   // ← badla
         }
     }
 
@@ -1202,16 +1202,16 @@ void speedtest_paint() {
         put_line(20, 7+88, 22, 7+88, 255, 255, 255);
     }
 
-    if (is_small_screen) {
-        put_small_text(4, 37, lcd_width, lcd_height, 0, 255, 0, "Download:");
-        put_small_text(60, 37, lcd_width, lcd_height, 255, 255, 255, dlbuf);
-        put_small_text(19, 49, lcd_width, lcd_height, 255, 0, 0, "Upload:");
-        put_small_text(60, 49, lcd_width, lcd_height, 255, 255, 255, ulbuf);
+     if (is_small_screen) {
+        put_small_text_4bpp(4, 37, lcd_width, lcd_height, 0, 255, 0, "Download:");   // ← badla
+        put_small_text_4bpp(60, 37, lcd_width, lcd_height, 255, 255, 255, dlbuf);   // ← badla
+        put_small_text_4bpp(19, 49, lcd_width, lcd_height, 255, 0, 0, "Upload:");   // ← badla
+        put_small_text_4bpp(60, 49, lcd_width, lcd_height, 255, 255, 255, ulbuf);   // ← badla
     } else {
-        put_small_text(4, 101, lcd_width, lcd_height, 0, 255, 0, "Download:");
-        put_small_text(60, 101, lcd_width, lcd_height, 255, 255, 255, dlbuf);
-        put_small_text(19, 113, lcd_width, lcd_height, 255, 0, 0, "Upload:");
-        put_small_text(60, 113, lcd_width, lcd_height, 255, 255, 255, ulbuf);
+        put_small_text_4bpp(4, 101, lcd_width, lcd_height, 0, 255, 0, "Download:");   // ← badla
+        put_small_text_4bpp(60, 101, lcd_width, lcd_height, 255, 255, 255, dlbuf);   // ← badla
+        put_small_text_4bpp(19, 113, lcd_width, lcd_height, 255, 0, 0, "Upload:");   // ← badla
+        put_small_text_4bpp(60, 113, lcd_width, lcd_height, 255, 255, 255, ulbuf);   // ← badla
     }
 }
 
@@ -1331,32 +1331,31 @@ void add_ssh_deinit() {
 
 void add_ssh_paint() {
     if (!add_ssh_is_success && !add_ssh_is_paused) {
-        put_small_text(7, 10, lcd_width, lcd_height, 255, 255, 255, "Connect to me with");
-        put_small_text(7, 25, lcd_width, lcd_height, 255, 255, 255, "your SSH key as user:");
-        put_large_text(20, 45, lcd_width, lcd_height, 0, 255, 0, add_ssh_pin);
-        put_small_text(5, 70, lcd_width, lcd_height, 255, 255, 255, "Your key will be added");
+        put_small_text_4bpp(7, 10, lcd_width, lcd_height, 255, 255, 255, "Connect to me with");   // ← badla
+        put_small_text_4bpp(7, 25, lcd_width, lcd_height, 255, 255, 255, "your SSH key as user:");   // ← badla
+        put_large_text(20, 45, lcd_width, lcd_height, 0, 255, 0, add_ssh_pin);   // ← waise hi (large)
+        put_small_text_4bpp(5, 70, lcd_width, lcd_height, 255, 255, 255, "Your key will be added");   // ← badla
         if (add_ssh_tick_num % 4 == 0) {
-            put_small_text(5, 97, lcd_width, lcd_height, 0, 255, 255, "Status: waiting...");
+            put_small_text_4bpp(5, 97, lcd_width, lcd_height, 0, 255, 255, "Status: waiting...");   // ← badla
         } else if (add_ssh_tick_num % 4 == 1) {
-            put_small_text(5, 97, lcd_width, lcd_height, 0, 255, 255, "Status: waiting");
+            put_small_text_4bpp(5, 97, lcd_width, lcd_height, 0, 255, 255, "Status: waiting");   // ← badla
         } else if (add_ssh_tick_num % 4 == 2) {
-            put_small_text(5, 97, lcd_width, lcd_height, 0, 255, 255, "Status: waiting.");
+            put_small_text_4bpp(5, 97, lcd_width, lcd_height, 0, 255, 255, "Status: waiting.");   // ← badla
         } else if (add_ssh_tick_num % 4 == 3) {
-            put_small_text(5, 97, lcd_width, lcd_height, 0, 255, 255, "Status: waiting..");
+            put_small_text_4bpp(5, 97, lcd_width, lcd_height, 0, 255, 255, "Status: waiting..");   // ← badla
         }
     } else if (add_ssh_is_paused) {
-        put_small_text(3, 10, lcd_width, lcd_height, 255, 255, 255, "No connection detected");
-        put_small_text(7, 25, lcd_width, lcd_height, 255, 255, 255, "Press Power to retry");
-        put_small_text(5, 97, lcd_width, lcd_height, 255, 0, 255, "Status: paused");
+        put_small_text_4bpp(3, 10, lcd_width, lcd_height, 255, 255, 255, "No connection detected");   // ← badla
+        put_small_text_4bpp(7, 25, lcd_width, lcd_height, 255, 255, 255, "Press Power to retry");   // ← badla
+        put_small_text_4bpp(5, 97, lcd_width, lcd_height, 255, 0, 255, "Status: paused");   // ← badla
     } else if (add_ssh_is_failed) {
-        put_small_text(7, 25, lcd_width, lcd_height, 255, 255, 255, "Press Power to retry");
-        put_small_text(5, 97, lcd_width, lcd_height, 255, 0, 0, "Status: error");
+        put_small_text_4bpp(7, 25, lcd_width, lcd_height, 255, 255, 255, "Press Power to retry");   // ← badla
+        put_small_text_4bpp(5, 97, lcd_width, lcd_height, 255, 0, 0, "Status: error");   // ← badla
     } else if (add_ssh_is_success) {
-        put_small_text(25, 30, lcd_width, lcd_height, 255, 255, 255, "Press any key");
-        put_small_text(5, 97, lcd_width, lcd_height, 0, 255, 0, "Status: success");
+        put_small_text_4bpp(25, 30, lcd_width, lcd_height, 255, 255, 255, "Press any key");   // ← badla
+        put_small_text_4bpp(5, 97, lcd_width, lcd_height, 0, 255, 0, "Status: success");   // ← badla
     }
 }
-
 void add_ssh_power_key_pressed() {
     if (add_ssh_is_paused || add_ssh_is_failed) {
         add_ssh_is_paused = 0;
@@ -1387,11 +1386,11 @@ void adbd_init() {
 
 void adbd_paint() {
     if (adbd_running) {
-        put_large_text(13, 35, lcd_width, lcd_height, 0, 255, 0, "ADBD is ON");
-        put_small_text(7, 80, lcd_width, lcd_height, 255, 255, 255, "Press any key to stop");
+        put_large_text(13, 35, lcd_width, lcd_height, 0, 255, 0, "ADBD is ON");   // ← waise hi (large)
+        put_small_text_4bpp(7, 80, lcd_width, lcd_height, 255, 255, 255, "Press any key to stop");   // ← badla
     } else {
-        put_large_text(10, 35, lcd_width, lcd_height, 255, 255, 0, "ADBD is OFF");
-        put_small_text(10, 80, lcd_width, lcd_height, 255, 255, 255, "Press Power to start");
+        put_large_text(10, 35, lcd_width, lcd_height, 255, 255, 0, "ADBD is OFF");   // ← waise hi (large)
+        put_small_text_4bpp(10, 80, lcd_width, lcd_height, 255, 255, 255, "Press Power to start");   // ← badla
     }
 }
 
@@ -1648,14 +1647,13 @@ void video_paint() {
 
     if (video_welcome_mode) {
         char *msg = "Press MENU to start\n\nWarning:\n  Traffic is 768KB/sec\nDo not use in roaming";
-        put_small_text(7, 40, lcd_width, lcd_height, 255, 255, 255, msg);
+        put_small_text_4bpp(7, 40, lcd_width, lcd_height, 255, 255, 255, msg);   // ← badla
     } else if (video_not_connected_yet) {
-        put_small_text(7, 20, lcd_width, lcd_height, 255, 255, 255, "Connecting...");
+        put_small_text_4bpp(7, 20, lcd_width, lcd_height, 255, 255, 255, "Connecting...");   // ← badla
     } else if (video_socket < 0) {
-        put_small_text(7, 20, lcd_width, lcd_height, 255, 255, 255, "Socket error");
+        put_small_text_4bpp(7, 20, lcd_width, lcd_height, 255, 255, 255, "Socket error");   // ← badla
     }
 }
-
 // ---------------------------- SNAKE -------------------------------
 
 // 0 - right, 1 - up, 2 - left, 3 - down
@@ -1790,7 +1788,7 @@ void snake_paint() {
         snprintf(buf, 32, "Score: %d", snake_score);
     }
 
-    put_small_text(5, 1, lcd_width, SNAKE_SCORE_SPACE, 255, 255, 255, buf);
+    put_small_text_4bpp(5, 1, lcd_width, SNAKE_SCORE_SPACE, 255, 255, 255, buf);
     put_rect(0, SNAKE_SCORE_SPACE - 1, lcd_width, 1, 255, 255, 255);
 
     for (uint32_t i = 0; i < snake_len; i += 1) {
