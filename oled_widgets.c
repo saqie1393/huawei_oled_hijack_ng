@@ -192,7 +192,7 @@ icon_draw_func get_icon_for_item(int idx) {
         case 4: return draw_icon_wifi;
         case 5: return draw_icon_speedtest;
         case 6: return draw_icon_wrench;
-        case 7: return draw_icon_battery;
+        case 7: return draw_icon_battery_simple;
         case 8: return draw_icon_key;
         case 9: return draw_icon_adb;
         case 10: return draw_icon_matrix;
@@ -218,8 +218,9 @@ void main_paint() {
 
         // Selection indicator
         if (item_idx == main_current_item) {
-            put_small_text_4bpp(2, y, lcd_width, lcd_height, 255, 0, 255, "#");
-        }
+    // Colored vertical bar (magenta)
+    put_rect(0, y - 1, 3, 14, 255, 0, 255);
+}
 
         // Icon (skip for "Back" item)
         if (item_idx > 0) {
@@ -744,8 +745,8 @@ void paint_menu(uint8_t curr_item, char items[][MAXITEMLEN]) {
         int is_item = (strcmp(item_type, "item") == 0);
 
         if (page_first_item + i == curr_item && is_item) {
-            put_small_text_4bpp(5, y, lcd_width, lcd_height, 255,0,255, "#");   // ← badla
-        }
+    put_rect(0, y - 1, 3, 14, 255, 0, 255);   // ← colored bar
+}
 
         int8_t x;
         char *item_text;
