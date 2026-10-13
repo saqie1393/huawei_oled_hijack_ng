@@ -294,21 +294,12 @@ void draw_icon_wifi(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b) {
 }
 
 // Battery (rectangle with fill level)
-void draw_icon_battery(uint8_t x, uint8_t y, int percent, 
-                       uint8_t r, uint8_t g, uint8_t b) {
-    // Battery body (outline)
+void draw_icon_battery_simple(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b) {
     put_rect(x, y + 3, 14, 10, r, g, b);
-    // Clear inside
     put_rect(x + 1, y + 4, 12, 8, 0, 0, 0);
-    // Fill based on percent
-    int fill = (percent * 12) / 100;
-    uint8_t fr = (percent > 50) ? 0 : (percent > 20) ? 255 : 255;
-    uint8_t fg = (percent > 50) ? 255 : (percent > 20) ? 188 : 0;
-    put_rect(x + 1, y + 4, fill, 8, fr, fg, 0);
-    // Terminal (bump on right)
+    put_rect(x + 1, y + 4, 8, 8, r, g, b);
     put_rect(x + 14, y + 6, 2, 4, r, g, b);
 }
-
 // SMS (envelope)
 void draw_icon_sms(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b) {
     // Envelope outline
