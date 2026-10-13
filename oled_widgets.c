@@ -18,7 +18,7 @@
 // Icon drawing functions
 extern void draw_icon_signal(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b);
 extern void draw_icon_wifi(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b);
-extern void draw_icon_battery(uint8_t x, uint8_t y, int percent, uint8_t r, uint8_t g, uint8_t b);
+extern void draw_icon_battery_simple(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b);
 extern void draw_icon_sms(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b);
 extern void draw_icon_speedtest(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b);
 extern void draw_icon_radio(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b);
