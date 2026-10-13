@@ -192,7 +192,7 @@ icon_draw_func get_icon_for_item(int idx) {
         case 4: return draw_icon_wifi;
         case 5: return draw_icon_speedtest;
         case 6: return draw_icon_wrench;
-        //case 7: return draw_icon_battery;
+        case 7: return draw_icon_battery;
         case 8: return draw_icon_key;
         case 9: return draw_icon_adb;
         case 10: return draw_icon_matrix;
