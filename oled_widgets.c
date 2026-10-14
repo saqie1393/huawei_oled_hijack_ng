@@ -9,7 +9,7 @@
 #include <sys/ioctl.h>
 
 #include <arpa/inet.h>
-
+#include "oled_icons.h"
 #include "oled.h"
 #include "oled_font.h"
 
@@ -32,6 +32,7 @@ extern void draw_icon_script(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t
 extern void lcd_refresh_screen(struct lcd_screen*);
 extern int lcd_control_operate(int);
 extern int notify_handler_async(int subsystemid, int action, int subaction);
+extern void put_icon_rgb565(uint8_t x, uint8_t y, const uint16_t* icon);
 
 extern void put_pixel(uint8_t x, uint8_t y, uint8_t red, uint8_t green, uint8_t blue);
 extern void put_line(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t red, uint8_t green, uint8_t blue);
@@ -202,6 +203,24 @@ icon_draw_func get_icon_for_item(int idx) {
         default: return 0;
     }
 }
+const uint16_t* get_colorful_icon(int idx) {
+    switch(idx) {
+        case 1: return ICON_SIGNAL;
+        case 2: return ICON_RADIO;
+        case 3: return ICON_SMS;
+        case 4: return ICON_WIFI;
+        case 5: return ICON_SPEEDTEST;
+        case 6: return ICON_WRENCH;
+        case 7: return ICON_BATTERY;
+        case 8: return ICON_KEY;
+        case 9: return ICON_ADB;
+        case 10: return ICON_MATRIX;
+        case 11: return ICON_VIDEO;
+        case 12: return ICON_SNAKE;
+        case 13: return ICON_SCRIPT;
+        default: return 0;
+    }
+}
 void main_paint() {
     const int lines_per_page = is_small_screen ? 4 : 7;
     const int page_first_item = main_current_item / lines_per_page * lines_per_page;
@@ -216,26 +235,20 @@ void main_paint() {
 
         int item_idx = page_first_item + i;
 
-        // Selection indicator
+        // Selection indicator (magenta bar)
         if (item_idx == main_current_item) {
-    // Colored vertical bar (magenta)
-    put_rect(0, y - 1, 3, 14, 255, 0, 255);
-}
+            put_rect(0, y - 1, 3, 14, 255, 0, 255);
+        }
 
-        // Icon (skip for "Back" item)
+        // Colorful icon (skip for "Back" item)
         if (item_idx > 0) {
-            icon_draw_func icon = get_icon_for_item(item_idx);
+            const uint16_t* icon = get_colorful_icon(item_idx);
             if (icon) {
-                // Color: cyan for selected, gray for unselected
-                if (item_idx == main_current_item) {
-                    icon(14, y - 1, 0, 255, 255);   // Cyan
-                } else {
-                    icon(14, y - 1, 150, 150, 150); // Gray
-                }
+                put_icon_rgb565(14, y - 1, icon);
             }
         }
 
-        // Text (shift right to make room for icon)
+        // Text
         put_small_text_4bpp(34, y, lcd_width, lcd_height, 255, 255, 255, cur_line);
     }
 
