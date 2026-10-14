@@ -1,7 +1,7 @@
 #define _GNU_SOURCE
 #include <stdlib.h>
 #include <string.h>
-
+#include "oled_icons.h"
 #include "oled.h"
 #include "oled_font.h"
 #include "oled_font_4bpp.h"   // 4-bit font (auto-generated)
