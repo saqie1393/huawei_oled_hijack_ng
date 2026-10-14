@@ -415,3 +415,19 @@ void draw_icon_script(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b) {
     put_rect(x + 3, y + 8, 8, 1, r, g, b);  // output
     put_rect(x + 3, y + 10, 6, 1, r, g, b); // output
 }
+void put_icon_rgb565(uint8_t x, uint8_t y, const uint16_t* icon) {
+    for (int iy = 0; iy < ICON_HEIGHT; iy++) {
+        for (int ix = 0; ix < ICON_WIDTH; ix++) {
+            uint16_t color = icon[iy * ICON_WIDTH + ix];
+            if (color != 0) {
+                uint8_t r5 = (color >> 11) & 0x1F;
+                uint8_t g6 = (color >> 5) & 0x3F;
+                uint8_t b5 = color & 0x1F;
+                uint8_t r = (r5 << 3) | (r5 >> 2);
+                uint8_t g = (g6 << 2) | (g6 >> 4);
+                uint8_t b = (b5 << 3) | (b5 >> 2);
+                put_pixel(x + ix, y + iy, r, g, b);
+            }
+        }
+    }
+}
